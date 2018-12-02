@@ -1,0 +1,275 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace _6osprogi
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+//A következőkben megint egy átalakított, de már az érettségi feladatsorra egészen hasonlító feladatsort kell megoldanod 3 óra alatt, tehát a héten be kell fejezned. Segíthettek egymásnak. Az alap algoritmusokon kívül a csere és az egymásba ágyazott ciklus algoritmusa is szerepel benne, de ezekhez részletes segítséget írtam.
+//Nem árt, ha a feladatokat megtervezed megoldás előtt.
+//A program neve legyen: varosok.
+//Minden képernyőre író feladat előtt írjuk ki a képernyőre a feladat sorszámát.
+//A feladatokat úgy kell megoldani, hogy más bemenő adatokkal is helyes eredményt hozzanak.
+//A programban városok adatait tároljuk.
+//Az adatok soronként: a város neve, lakosainak száma, Budapesttől mért távolsága,
+//illetve amelyik város nem megyeszékhely, ott még ez is szerepel: NO.
+//A következő adatokat programból vigyük föl összesen 4 tömbbe.
+//Az első tömbben a városok nevei;
+//a másodikban a lakosok száma;
+//a harmadikban a távolság;
+//a negyedikben vagy üres karakterlánc, vagy a NO szó szerepeljen.
+/*
+Békéscsaba 59000 210
+Szolnok 72000 119
+Kecskemét 112000 93
+Nyíregyháza 118000 230 NO
+Miskolc 164000 182
+*/
+//1.feladat:
+//Vigyük föl tömbökbe az adatokat,
+//majd írjuk is ki a tartalmukat, egy sorba egy város adatait.
+
+            Console.WriteLine("1. feladat:");
+
+            string[] nev = new string[5];
+            nev[0] = "Békéscsaba";
+            nev[1] = "Szolnok";
+            nev[2] = "Kecskemét";
+            nev[3] = "Nyíregyháza";
+            nev[4] = "Miskolc";
+            int[] lakossag = new int[5];
+            lakossag[0] = 59000;
+            lakossag[1] = 72000;
+            lakossag[2] = 112000;
+            lakossag[3] = 118000;
+            lakossag[4] = 164000;
+            int[] tavolsag = new int[5];
+            tavolsag[0] = 210;
+            tavolsag[1] = 119;
+            tavolsag[2] = 93;
+            tavolsag[3] = 230;
+            tavolsag[4] = 182; 
+            string[] megyesz = new string[5];
+            megyesz[3] = "NO";
+
+            for (int i = 0; i < nev.Length; i++)
+            {
+                Console.Write("A város: {0}, Lakossága: {1}, Távolság Budapesttől: {2}, ", nev[i], lakossag[i], tavolsag[i]);
+
+                if (megyesz[i] == "NO") Console.WriteLine("Nem megyeszékhely");
+
+                else Console.WriteLine("Megyeszékhely");
+
+                Console.WriteLine();
+            }
+
+
+            //2.feladat:
+
+            //Írd ki a képernyőre annak a városnak a nevét, és a népességét, amely nem megyeszékhely. (Ha több ilyen lenne, mindet ki kéne írni.) Ha nincs ilyen, írjunk ki hibaüzenetet.
+
+            Console.WriteLine("2. feladat:");
+            bool nincs = true;
+            for (int i = 0; i < nev.Length; i++)
+            {
+                if(megyesz[i] == "NO")
+                {
+                    Console.WriteLine("Neve: {0}, népessége: {1}", nev[i], lakossag[i]);
+                    nincs = false;
+                }
+            }
+            if(nincs)
+            {
+                Console.WriteLine("Nincs olyan, ami nem megyeszékhely!");
+            }
+            //3.feladat – lehet, hogy új anyag:
+            //Cseréld meg a legtávolabbi város adatait a legkevesebb lakosú város adataival úgy,
+            //hogy az összetartozó adatok továbbra is egymáshoz tartozzanak.
+            //Segítség:
+            //Elsőként keresd meg a legnagyobb távolságot, jegyezd meg egy új változóban, hanyadik (példánkban 230, ami a 4. indexű helyen van).
+            //Másodikként keresd meg a legkevesebb lakost, jegyezd meg egy új változóban, hogy hanyadik (példánkban 59000, ami a 0. helyen van).           
+            //Mostmár tudod, melyik két sorát kell megcserélni minden tömbnek (példánkban Békéscsaba és Nyíregyháza összes adatát kell megcserélni).
+            //A csere első lépéseként Békéscsaba minden adatát (4 adat) beteszed egy-egy megfelelő típusú változóba.
+            //A csere második lépéseként  Nyíregyháza összes adatát egyesével bemásolod a tömbök nulladik helyére. Ezzel fölülírod, ami ott van, de éppen ez a cél.
+            //A csere harmadik lépéseként a változókból minden adatot bemásolsz a 4. indexű helyekre. Ezzel fölülírod, ami ott van, de éppen ez a cél.
+            //Kész. Ellenőrzésként írasd ki újra az összes tömböt.
+
+            Console.WriteLine("3. feladat:");
+            int maxtav = tavolsag[0];
+            int minlak = lakossag[0];
+            int maxtavindex = 0;
+            int minlakindex = 0;
+            for (int i = 0; i < nev.Length; i++)
+            {
+                if (tavolsag[i] > maxtav)
+                {
+                    maxtav = tavolsag[i];
+                }
+                if(lakossag[i] < minlak)
+                {
+                    minlak = lakossag[i];
+                }
+            }
+            int z = 0;
+            while (maxtav != tavolsag[z])
+            {
+                maxtavindex++;
+                z++;
+            }
+            
+            z = 0;
+            while (minlak != lakossag[z])
+            {
+                minlakindex = z;
+                z++;
+            }
+            string cserevarosnev = nev[minlakindex];
+            nev[minlakindex] = nev[maxtavindex];
+            nev[maxtavindex] = cserevarosnev;
+
+            int cserelakossag = lakossag[minlakindex];
+            lakossag[minlakindex] = lakossag[maxtavindex];
+            lakossag[maxtavindex] = cserelakossag;
+
+            int cseretav = tavolsag[minlakindex];
+            tavolsag[minlakindex] = tavolsag[maxtavindex];
+            tavolsag[maxtavindex] = cseretav;
+
+            string cseremegye = megyesz[minlakindex];
+            megyesz[minlakindex] = megyesz[maxtavindex];
+            megyesz[maxtavindex] = cseremegye;
+
+            for (int i = 0; i < nev.Length; i++)
+            {
+                Console.Write("A város: {0}, Lakossága: {1}, Távolság Budapesttől: {2}, ", nev[i], lakossag[i], tavolsag[i]);
+
+                if (megyesz[i] == "NO") Console.WriteLine("Nem megyeszékhely");
+
+                else Console.WriteLine("Megyeszékhely");
+
+                Console.WriteLine();
+            }
+            //4.feladat:
+            //Írjuk ki a Budapesttől legtávolabbi város nevét a képernyőre.   
+            Console.WriteLine("4. feladat:");
+            //////////A legtávolabbi várost már megkerestük.
+            //////////Nemsokára megtanuljuk, hogyan kell azt elkerülni,
+            //////////hogy ugyanazt a kódot kétszer kelljen leírni.
+            //////////Ugyanez a helyzet a következő feladattal is.
+            Console.WriteLine(nev[minlakindex]);
+            //5.feladat:
+            //Írjuk ki a legkevesebb lakosú város nevét a képernyőre.
+
+            Console.WriteLine("5. feladat:");
+            Console.WriteLine(nev[maxtavindex]);
+
+            //6.feladat:
+            Console.WriteLine("6. feladat:");
+            //Írjuk ki a 100000 lakosúnál nagyobb városok neveit is, soronként egyet. Ha nincs ilyen, írjunk ki hibaüzenetet.
+            nincs = true;
+            for (int i = 0; i < nev.Length; i++)
+            {
+                if (lakossag[i] > 100000)
+                {
+                    Console.WriteLine(nev[i]);
+                    nincs = false;
+                }
+            }
+            if(nincs)
+                Console.WriteLine("Nincs 100.000-nél nagyobb lakosságú város!");
+            //7.feladat:
+
+            //Döntsük el, hogy van-e 180 km-nél távolabbi város. Ha találtunk ilyet, írjuk ki az elsőnek a nevét és a hozzá tartozó km-t. Ha nincs ilyen, írjunk ki hibaüzenetet.
+
+            Console.WriteLine("7. feladat:");
+            nincs = true;
+            z = 0;
+            while (tavolsag[z] < 180 && z < nev.Length)
+            {
+                z++;
+            }
+            Console.WriteLine("Neve: {0}, távolsága: {1}", nev[z], tavolsag[z]);
+            //8.feladat:
+            Console.WriteLine("8. feladat: ");
+            //Számoljuk meg, és írjuk ki, hogy hány 50000 és 100000 közötti lakosú város van. Ha nincs ilyen, írjunk ki hibaüzenetet.
+            nincs = true;
+            int darab = 0;
+            for (int i = 0; i < nev.Length; i++)
+            {
+                if (lakossag[i] >= 50000 && lakossag[i] <= 100000)
+                {
+                    darab++;
+                    nincs = false;
+                }
+            }
+            if(nincs)
+                Console.WriteLine("Nincs ilyen város!");
+            else
+                Console.WriteLine(darab);
+                //9.feladat:
+                //Írjuk ki a városok távolságának átlagát.
+
+                Console.WriteLine("9. feladat:");
+            int osszeg = 0;
+            double atlag = 0;
+            for (int i = 0; i < tavolsag.Length; i++)
+            {
+                osszeg += tavolsag[i];
+            }
+            atlag = osszeg / tavolsag.Length;
+            Console.WriteLine("A távolságok átlaga: "+ atlag);
+            //10.feladat:
+            //Egy új tömbbe másoljuk át a megyeszékhelyek nevét. Ha nincs ilyen, írjunk ki hibaüzenetet.
+
+            Console.WriteLine("10. feladat:");
+            string[] megyesz2 = new string[5];
+            nincs = true;
+            for (int i = 0; i < nev.Length; i++)
+            {
+                if (megyesz[i] == null)
+                {
+                    megyesz2[i] = nev[i];
+                    nincs = false;
+                }
+            }
+            if(nincs)
+                Console.WriteLine("Nincs megyeszékhely!");
+            foreach (string item in megyesz2)
+            {
+                if(item != null)
+                Console.WriteLine(item);
+            }
+            //11. feladat – lehet, hogy új anyag:
+            //Demonstráld a képernyőn a városok lakosainak számát a következőképpen:
+            //Az első sorba írd ki a város nevét. A következő sorba írj ki
+            //annyi # jelet (egyenként, ciklussal), ahány ezer lakosa van a városnak
+            //(nem baj, ha a jelek a következő sorba is átcsúsznak).
+            //Ismételd ezt meg az összes várossal.
+            //A feladat megoldásához arra van szükség, hogy azon a cikluson belül,
+            //ami végigmegy a városnév tömbön, és kiírja a városok nevét, indítani kell még egy ciklust,
+            //ami meg kiírja a csillagokat.
+            //Használj az első ciklusnak for ciklust, a belső ciklus legyen while ciklus,
+            //és nyilván más legyen a ciklusváltozó neve.
+
+            Console.WriteLine("11. feladat:");
+            for (int i = 0; i < nev.Length; i++)
+            {
+                Console.WriteLine(nev[i]);
+                z = 0;
+                while (z < lakossag[i])
+                {
+                    Console.Write('#');
+                    z += 1000;
+                }
+                Console.WriteLine();
+            }
+            Console.ReadKey();
+
+        }
+    }
+}
